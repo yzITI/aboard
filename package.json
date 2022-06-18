@@ -1,0 +1,23 @@
+{
+  "name": "aboard-be",
+  "version": "1.0.0",
+  "description": "Aboard is a board, not abroad.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/yzITI/aboard-be.git"
+  },
+  "author": "",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/yzITI/aboard-be/issues"
+  },
+  "homepage": "https://github.com/yzITI/aboard-be#readme",
+  "dependencies": {
+    "mongodb": "^4.7.0",
+    "ws": "^8.8.0"
+  }
+}
