@@ -2,7 +2,7 @@ const webSocket = require('ws')
 
 const client = new webSocket('ws://127.0.0.1:8080/', {
   headers: {
-    'name': '测试用户'
+    'name': encodeURI('测试用户')
   }
 })
 
@@ -16,7 +16,13 @@ const heartbeat = () => {
 
 
 client.on('open', () => {
-  client.send('hello!')
+  client.send(JSON.stringify({
+    o: 'topic.get',
+    i: '233',
+    d: {
+      topic: 'zK7ZBPSAIwHqUrOvCCWGSg'
+    }
+  }))
 })
 
 client.on('message', (data) => {

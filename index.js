@@ -2,6 +2,7 @@ const webSocket = require('ws')
 
 const auth = require('./auth')
 const comet = require('./comet')
+const controller = require('./controllers')
 
 const wss = new webSocket.WebSocketServer({ port: 8080 })
 
@@ -19,7 +20,17 @@ wss.on('connection', async (ws, req) => {
     ws.isAlive = true
   })
 
-  comet.initClient(ws, user)
+  comet.setSocks(user.id, ws)
+  
+  ws.on('message', async (data) => {
+    try {
+      let res = await controller(user, JSON.parse(data))
+      console.log(res)
+      ws.send(JSON.stringify(res))
+    } catch {
+      return
+    }
+  })
 })
 
 const heartbeatInterval = setInterval(() => {
