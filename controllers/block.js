@@ -33,3 +33,19 @@ exports.post = async (_id, block, userId) => {
   await B.insert(block)
   comet.pub(_id, wrap('block.children', _id, { [block._id]: block }))
 }
+
+exports.del = async (_id, userId) => {
+  const block = await B.find({ _id }).then(r => r?.[0])
+  if (!block || block.user !== userId) return
+  await B.del({ _id })
+  comet.pub(_id, wrap('block.error', _id))
+  let bids = [_id]
+  while (bids.length) {
+    const blocks = await B.find({ parent: { $in: bids } }, { projection: { _id: 1 } })
+    await B.del({ parent: { $in: bids } })
+    bids = blocks.map(x => x._id)
+    for (const bid of bids) {
+      comet.pub(bid, wrap('block.error', bid))
+    }
+  }
+}
