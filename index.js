@@ -1,44 +1,31 @@
-const webSocket = require('ws')
+const { WebSocketServer } = require('ws')
 
-const auth = require('./auth')
 const comet = require('./comet')
-const controller = require('./controllers')
+const handler = {
+  block: require('./controllers/block.js')
+}
 
-const wss = new webSocket.WebSocketServer({ port: 8080 })
+const wss = new WebSocketServer({ port: 8080 })
 
-wss.on('connection', async (ws, req) => {
-  let user = await auth.verify(req)
-  if (!user) {
-    socket.write('401 Unauthorized')
-    socket.destroy()
-    return
-  }
-
-  // set heartbeat
-  ws.isAlive = true
-  ws.on('pong', () => {
-    ws.isAlive = true
-  })
-
-  comet.setSocks(user.id, ws)
-  
-  ws.on('message', async (data) => {
+wss.on('connection', async ws => {
+  let userId = ''
+  ws.on('message', async raw => {
     try {
-      let res = await controller(user, JSON.parse(data))
-      console.log(res)
-      ws.send(JSON.stringify(res))
-    } catch {
-      return
-    }
+      const data = JSON.parse(raw)
+      const ns = data.N.split('.')
+      const A = data.A || []
+      if (userId) A.push(userId)
+      if (data.N === 'auth') { // auth
+        userId = 'test'
+        comet.setSocks(userId, ws)
+        comet.send(userId, { N: 'auth' })
+      }
+      let f = handler
+      for (const n of ns) {
+        if (!f[n]) return
+        f = f[n]
+      }
+      f(...A)
+    } catch { return }
   })
 })
-
-const heartbeatInterval = setInterval(() => {
-  wss.clients.forEach((ws) => {
-    if (ws.isAlive === false) return ws.terminate()
-    ws.isAlive = false
-    ws.ping()
-  })
-}, 30 * 1000)
-
-wss.on('close', () => clearInterval(heartbeatInterval))

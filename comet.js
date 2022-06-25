@@ -3,14 +3,14 @@ let subscriber = {} // subscriber[target][userId] = ws
 let channel = {} // channel[userId] = target
 
 module.exports = {
-  setSocks(userId, ws) {
+  setSocks (userId, ws) {
     sockets[userId] = ws
     ws.on('close', () => {
       delete sockets[userId]
       this.clearSub(userId)
     })
   },
-  setSub(userId, target) {
+  setSub (userId, target) {
     let oldChan = channel[userId]
     if (oldChan) {
       delete subscriber[oldChan][userId]
@@ -22,7 +22,7 @@ module.exports = {
     if (!subscriber[target]) subscriber[target] = {}
     subscriber[target][userId] = sockets[userId]
   },
-  clearSub(userId) {
+  clearSub (userId) {
     let chan = channel[userId]
     if (!chan) return
     delete channel[userId]
@@ -31,10 +31,14 @@ module.exports = {
       delete subscriber[chan]
     }
   },
-  pub(target, data) {
+  pub (target, data) {
     if (!subscriber[target]) return
-    for (let i of Object.keys(subscriber[target])) {
+    for (const i in subscriber[target]) {
       subscriber[target][i].send(JSON.stringify(data))
     }
+  },
+  send (userId, data) {
+    if (!sockets[userId]) return
+    sockets[userId].send(JSON.stringify(data))
   }
 }
