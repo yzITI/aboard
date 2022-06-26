@@ -43,7 +43,7 @@ Event {
 - `auth(jwt)` authentication
 
 - `block.get(_id)` get information of a block (surface & volume) as well as the children's surface information
-- `block.post(_id, block)` post a new block as a children of `_id`
+- `block.put(_id, block)` post a new block as a children of `_id`
 - `block.del(_id)` remove a block and all its subtree
 
 ### Events

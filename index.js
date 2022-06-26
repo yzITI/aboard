@@ -1,5 +1,6 @@
 const { WebSocketServer } = require('ws')
 
+const aauth = require('./utils/aauth.js')
 const comet = require('./comet')
 const handler = {
   block: require('./controllers/block.js')
@@ -8,18 +9,19 @@ const handler = {
 const wss = new WebSocketServer({ port: 8080 })
 
 wss.on('connection', async ws => {
-  let userId = ''
+  let user = null
   ws.on('message', async raw => {
     try {
       const data = JSON.parse(raw)
       const ns = data.N.split('.')
       const A = data.A || []
-      if (userId) A.push(userId)
+      if (user) A.push(user)
       if (data.N === 'auth') { // auth
-        userId = 'test'
-        comet.setSocks(userId, ws)
-        comet.send(userId, { N: 'auth' })
+        user = { id: 'test', name: 'name' }
+        comet.setSocks(user.id, ws)
+        comet.send(user.id, { N: 'auth' })
       }
+      if (!user) return
       let f = handler
       for (const n of ns) {
         if (!f[n]) return
