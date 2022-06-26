@@ -23,9 +23,10 @@ exports.get = async (_id, user) => {
   comet.send(user.id, wrap('block.children', res))
 }
 
-exports.put = async (_id, block, user) => {
-  const p = await B.find({ _id }).then(r => r?.[0])
-  if (!p) return comet.send(user.id, wrap('block.error', _id))
+exports.put = async (block, user) => {
+  if (!block.parent) return
+  const p = await B.find({ _id: block.parent }).then(r => r?.[0])
+  if (!p) return comet.send(user.id, wrap('block.error', block.parent))
   if (block._id) { // update
     const b = await B.find({ _id: block._id }).then(r => r?.[0])
     if (!b || b.user !== user.id) return
@@ -33,9 +34,9 @@ exports.put = async (_id, block, user) => {
   block.time = Date.now()
   block.user = user.id
   block.author = user.name
-  block.parent = _id
   await B.put({ _id: block._id }, block)
-  comet.pub(_id, wrap('block.children', _id, { [block._id]: block }))
+  comet.pub(block._id, wrap('block.one', block))
+  comet.pub(block.parent, wrap('block.children', block.parent, { [block._id]: block }))
 }
 
 exports.del = async (_id, user) => {
