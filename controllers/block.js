@@ -24,7 +24,7 @@ exports.get = async (_id, user) => {
 }
 
 exports.put = async (block, user) => {
-  if (!block.parent) return
+  if (typeof block.parent === 'undefined') return
   const p = await B.find({ _id: block.parent }).then(r => r?.[0])
   if (!p) return comet.send(user.id, wrap('block.error', block.parent))
   if (block._id) { // update
