@@ -20,7 +20,7 @@ exports.get = async (_id, user) => {
     res[c._id] = c
     c.childrenCount = await B.count({ parent: c._id })
   }
-  comet.send(user.id, wrap('block.children', res))
+  comet.send(user.id, wrap('block.children', _id, res))
 }
 
 exports.put = async (block, user) => {
