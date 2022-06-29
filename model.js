@@ -9,7 +9,7 @@ client.connect(async err => {
   await B.createIndex({ parent: 1 })
   await B.replaceOne({ _id: '' }, {
     user: 'root',
-    volume: { type: 'list', title: 'Aboard' }
+    volume: { type: 'List', title: 'Aboard' }
   }, { upsert: true })
   console.log('# Mongodb Ready')
 })
