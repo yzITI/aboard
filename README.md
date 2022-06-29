@@ -11,12 +11,15 @@ block {
   user: 'userid',
   parent: 'blockid',
   surface: { // all surface information
+    type: 'surface type',
+    // all optional properties for given surface type
     title: 'title',
-    type: 'block type',
     author: 'display user name',
     value: 'text or other kinds of value'
   },
-  volume: { // longer content of block
+  volume: { // content of block
+    type: 'volume type',
+    // all optional properties for given volume type
     value: 'text or other kinds of value'
   }
 }
