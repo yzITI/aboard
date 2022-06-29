@@ -19,7 +19,7 @@ wss.on('connection', async ws => {
       if (data.N === 'auth') { // auth
         user = { id: 'test', name: 'name' }
         comet.setSocks(user.id, ws)
-        comet.send(user.id, { N: 'auth' })
+        comet.send(user.id, { N: 'auth', A: [user] })
       }
       if (!user) return
       let f = handler

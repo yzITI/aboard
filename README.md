@@ -51,7 +51,7 @@ Event {
 
 ### Events
 
-- `auth()` successfully auth
+- `auth(user)` successfully auth, return user object
 
 - `block.one(block)` full information of block (surface & volume)
 - `block.children(blockid, {})` **surface** information of block children
