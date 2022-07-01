@@ -44,6 +44,7 @@ exports.del = async (_id, user) => {
   if (!block || block.user !== user.id) return
   await B.del({ _id })
   comet.pub(_id, wrap('block.error', _id))
+  comet.pub(block.parent, wrap('block.removeChildren', block.parent, _id))
   let bids = [_id]
   while (bids.length) {
     const blocks = await B.find({ parent: { $in: bids } }, { projection: { _id: 1 } })
