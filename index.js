@@ -17,7 +17,8 @@ wss.on('connection', async ws => {
       const A = data.A || []
       if (user) A.push(user)
       if (data.N === 'auth') { // auth
-        user = { id: 'test', name: 'name' }
+        user = await aauth(A[0])
+        if (!user) return
         comet.setSocks(user.id, ws)
         comet.send(user.id, { N: 'auth', A: [user] })
       }
