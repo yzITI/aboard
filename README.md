@@ -46,7 +46,7 @@ Event {
 - `auth(jwt)` authentication
 
 - `block.get(_id)` get information of a block (surface & volume) as well as the children's surface information
-- `block.put(_id, block)` post a new block as a children of `_id`
+- `block.put(block)` post a new block as a children of `_id`
 - `block.del(_id)` remove a block and all its subtree
 
 ### Events
@@ -57,3 +57,37 @@ Event {
 - `block.children(blockid, {})` **surface** information of block children
 - `block.removeChildren(blockid, childrenid)` remove a children from block
 - `block.error(blockid)` current block has error
+
+## Some Block Types
+
+### Volumes
+
+```js
+List {
+  type: 'List',
+  title: 'List Title'
+  // only allow children surface type=ListItem
+}
+Post {
+  type: 'Post',
+  author: 'Post author',
+  title: 'Post Title',
+  content: 'Post Content'
+  // only allow children surface type=Comment
+}
+```
+
+### Surfaces
+
+```js
+ListItem {
+  type: 'ListItem',
+  title: 'Titie',
+  author: 'author name'
+}
+Comment {
+  type: 'Comment',
+  content: 'content',
+  author: 'author name'
+}
+```
