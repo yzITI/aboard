@@ -16,10 +16,7 @@ exports.get = async (_id, user) => {
   // children info
   const children = await B.find({ parent: _id }, { projection })
   const res = {}
-  for (const c of children) {
-    res[c._id] = c
-    c.count = await B.count({ parent: c._id })
-  }
+  for (const c of children) res[c._id] = c
   comet.send(user.id, wrap('block.children', _id, res))
 }
 
@@ -36,7 +33,6 @@ exports.put = async (block, user) => {
   block.author = user.name
   await B.put({ _id: block._id }, block)
   comet.pub(block._id, wrap('block.one', block))
-  block.count = await B.count({ parent: block._id })
   comet.pub(block.parent, wrap('block.children', block.parent, { [block._id]: block }))
 }
 
