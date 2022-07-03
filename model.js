@@ -7,10 +7,10 @@ client.connect(async err => {
   const B = client.db(dbName).collection('block')
   // initialize model
   await B.createIndex({ parent: 1 })
-  await B.replaceOne({ _id: '' }, {
-    user: 'root',
+  await B.insertOne({
+    _id: '', user: 'root',
     volume: { type: 'List', title: 'Aboard' }
-  }, { upsert: true })
+  }).catch(e => {})
   console.log('# Mongodb Ready')
 })
 
